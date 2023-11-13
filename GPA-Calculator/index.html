@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPA Calculator</title>
     <link rel="stylesheet" href="./css/style.css">
+    <!-- icon -->
+    <link rel="icon" href="./icon.png">
 </head>
 
 <body>
@@ -21,6 +23,7 @@
                         <th>Hours</th>
                         <th>Grade</th>
                         <th>Points</th>
+                        <th>Remove</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
@@ -31,9 +34,12 @@
         
         <div class="center">
             <button id="add">Add</button>
-            <button id="reset">Reset</button>
+            <button id="reset" onclick="Reset()">Reset</button>
+            <button id="default" onclick="DefaultSubjects()">Default</button>
         </div>
         <h2 class="gpa">Your Total GPA = <span class="total">0.0</span> out of 4.0</h2>
+        <p class="center">Please note that GPA is calculated based on Bylaw 2020 @ Faculty of Computers and Artificial Intelligence, Cairo University</p>
+        <p class="center progress-saved">Don't worry, Your Progress is Saved!</p>
     </div>
     <script src="./js/script.js"></script>
 </body>

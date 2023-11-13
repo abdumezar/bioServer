@@ -2,35 +2,39 @@ var tbody = document.getElementById('tbody');
 var addBtn = document.getElementById('add');
 var resetBtn = document.getElementById('reset');
 var totalGPA = document.querySelector('.gpa .total');
-
+var lastId = 0;
 var examples = `
-<tr>
+<tr subId="1">
     <td>Example 1</td>
     <td>80</td>
     <td class="sub-hours">2</td>
     <td>B+</td>
     <td class="sub-points">3.3</td>
+    <td><button id="removeBtn" onclick="Remove(1)">Remove<button></td>
 </tr>
-<tr>
+<tr subId="2">
     <td>Example 2</td>
     <td>75</td>
     <td class="sub-hours">3</td>
     <td>B</td>
     <td class="sub-points">3</td>
+    <td><button id="removeBtn" onclick="Remove(2)">Remove<button></td>
 </tr>
-<tr>
+<tr subId="3">
     <td>Example 3</td>
     <td>93</td>
     <td class="sub-hours">3</td>
     <td>A+</td>
     <td class="sub-points">4</td>
+    <td><button id="removeBtn" onclick="Remove(3)">Remove<button></td>
 </tr>
-<tr>
+<tr subId="4">
     <td>Example 4</td>
     <td>85</td>
     <td class="sub-hours">3</td>
     <td>A</td>
     <td class="sub-points">3.7</td>
+    <td><button id="removeBtn" onclick="Remove(4)">Remove<button></td>
 </tr>`
 
 var inputs = `
@@ -52,7 +56,16 @@ var inputs = `
     </td>
 </tr>`;
 
-tbody.innerHTML = examples + inputs;
+if(localStorage.getItem('subjects') == null)
+{
+    localStorage.setItem('subjects', examples + inputs);
+    tbody.innerHTML = examples + inputs;
+}
+else
+{
+    tbody.innerHTML = localStorage.getItem('subjects');
+}
+
 CalculateTotalGPA();
 
 addBtn.addEventListener('click', function () {
@@ -90,11 +103,6 @@ tbody.addEventListener('keyup', function (e) {
     }
 });
 
-resetBtn.addEventListener('click', function () {
-    tbody.innerHTML = inputs;
-    totalGPA.innerHTML = '0.00';
-});
-
 function addSubject(){
     var subject = document.getElementById('subject').value;
     var mark = document.getElementById('mark').value;
@@ -109,13 +117,15 @@ function addSubject(){
         alert('Invalid Hours');
     } else {
         var current = tbody.innerHTML;
+        var subId = ++lastId;
         var added = `
-        <tr>
+        <tr subId="${subId}">
             <td>${subject}</td>
             <td>${mark}</td>
             <td class="sub-hours">${hours}</td>
             <td>${calculateGrade(mark)}</td>
             <td class="sub-points">${calculatePoint(mark)}</td>
+            <td><button id="removeBtn" onclick="Remove(${subId})">Remove<button></td>
         </tr>`;
         tbody.innerHTML = added + current;
         subject.value = '';
@@ -123,6 +133,7 @@ function addSubject(){
         hours.value = '';
         
         CalculateTotalGPA();
+        localStorage.setItem('subjects', tbody.innerHTML);
     }
 }
 
@@ -184,5 +195,26 @@ function CalculateTotalGPA(){
             total += parseFloat(grade[i].innerHTML) * parseFloat(hours[i].innerHTML);
             count += parseFloat(hours[i].innerHTML);
     }
-    totalGPA.innerHTML = (total / count).toFixed(2);
+    if(count == 0)
+        totalGPA.innerHTML = '0.00';
+    else
+        totalGPA.innerHTML = (total / count).toFixed(2);
+}
+
+function Reset(){
+    tbody.innerHTML = inputs;
+    localStorage.setItem('subjects', inputs);
+    totalGPA.innerHTML = '0.00';
+}
+
+function Remove(id) {
+    document.querySelector(`tr[subId="${id}"]`).remove();
+    localStorage.setItem('subjects', tbody.innerHTML);
+    CalculateTotalGPA();
+}
+
+function DefaultSubjects(){
+    localStorage.setItem('subjects', examples + inputs);
+    tbody.innerHTML = examples + inputs;
+    CalculateTotalGPA();
 }
